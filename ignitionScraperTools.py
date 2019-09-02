@@ -7,10 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 
 def login(driver, url):
     # Credentials used to login to CustomsForge. Don't forget to set this.
-    credentials = {
-        "ips_username": "your-username",
-        "ips_password": "your-password"
-    }
+    credentials = load_credentials_from_file()
     driver.get(url)
     # Finds the login button and inputs
     loginUsernameInput = driver.find_element_by_css_selector("input#ips_username")
@@ -22,6 +19,16 @@ def login(driver, url):
     # Wait until the index page loads
     WebDriverWait(driver, 10).until(EC.url_contains('index.php'))
     time.sleep(4)
+    
+def load_credentials_from_file():
+    # Structure of credentials.txt:
+    # username,password
+    creds = open('credentials.txt').read.split(',')
+    credentials = {
+        "ips_username": creds[0],
+        "ips_password": creds[1]
+    }
+    return credentials
     
 def performAntiBotCounterMeasures(driver):
     WebDriverWait(driver, 10).until(
@@ -50,27 +57,25 @@ def searchForTrack(driver, searchTerms):
     time.sleep(4)
 
 def sortSongsByMostDownloads(driver):
-    downloadsSorterButton = driver.find_element_by_css_selector('th[class*="downloads"')
+    sort_downloads_button = driver.find_element_by_css_selector('th[class*="downloads"')
     actions = ActionChains(driver)
-    actions.move_to_element(downloadsSorterButton)
+    actions.move_to_element(sort_downloads_button)
     actions.click()
     actions.perform()
 
-    time.sleep(4)
-    downloadsSorterButton = driver.find_element_by_css_selector('th[class*="downloads"')
+    time.sleep(6)
 
-    actions = ActionChains(driver)
-    actions.move_to_element(downloadsSorterButton)
+    actions.move_to_element(sort_downloads_button)
     actions.click()
     actions.perform()
 
-    time.sleep(4)
+    time.sleep(6)
 
 def downloadSong(driver, songRow):
     time.sleep(1)
 
     dropdownButton = songRow.find_elements_by_css_selector('div[class*="open-context"')
-
+    
     actions = ActionChains(driver)
     actions.move_to_element(dropdownButton[0])
     actions.click()

@@ -7,6 +7,7 @@ from ignitionScraperTools import login
 from ignitionScraperTools import downloadSong
 from ignitionScraperTools import sortSongsByMostDownloads
 from ignitionScraperTools import searchForTrack
+from scrapeSpotifyPlaylist import get_songs_from_spotify
 
 # Chrome executable location. (Open task manager, right click Chrome and select "Open file location")
 webdriver.ChromeOptions.binary_location = ur"C:\\Program Files (x86)\\Google\\Chrome Beta\\Application\\chrome.exe"
@@ -14,17 +15,9 @@ webdriver.ChromeOptions.binary_location = ur"C:\\Program Files (x86)\\Google\\Ch
 # The login URL for CustomsForge
 loginUrl = "https://customsforge.com/index.php?app=core&module=global&section=login"
 
-# The artists & songs you're searching for. These will become parameters at some point.
-searches = [
-    {
-        'artist': 'muse',
-        'title': 'exo politics'
-    },
-    {
-        'artist': 'eric clapton',
-        'title': 'cocaine'
-    }
-]
+playlist_url = "https://open.spotify.com/playlist/3hr3kUFmiZqCRs149azvmu?si=EZosJvSoSFyF7evdj0-wYg"
+# The spotify playlist URL
+searches = get_songs_from_spotify(playlist_url)
 
 def downloadSongs(searches):
     # Chrome Driver setup.
