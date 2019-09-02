@@ -8,6 +8,7 @@ from ignitionScraperTools import downloadSong
 from ignitionScraperTools import sortSongsByMostDownloads
 from ignitionScraperTools import searchForTrack
 from scrapeSpotifyPlaylist import get_songs_from_spotify
+from selenium.webdriver import Chrome
 
 # Chrome executable location. (Open task manager, right click Chrome and select "Open file location")
 webdriver.ChromeOptions.binary_location = ur"C:\\Program Files (x86)\\Google\\Chrome Beta\\Application\\chrome.exe"
@@ -16,12 +17,13 @@ webdriver.ChromeOptions.binary_location = ur"C:\\Program Files (x86)\\Google\\Ch
 loginUrl = "https://customsforge.com/index.php?app=core&module=global&section=login"
 
 playlist_url = "https://open.spotify.com/playlist/3hr3kUFmiZqCRs149azvmu?si=EZosJvSoSFyF7evdj0-wYg"
+
 # The spotify playlist URL
 searches = get_songs_from_spotify(playlist_url)
 
 def downloadSongs(searches):
     # Chrome Driver setup.
-    driver = webdriver.Chrome()
+    driver = Chrome()
     driver.implicitly_wait(10)
 
     # Perform login. (function hidden in tools file)
@@ -42,8 +44,9 @@ def downloadSongs(searches):
         searchForTrack(driver, searchTerms)
 
         songRows = driver.find_elements_by_css_selector('tr.odd, tr.even')
-
-        if len(songRows) > 0:
+        
+        empty = driver.find_elements_by_css_selector('td.dataTables_empty')
+        if not empty:
             # Open the context menu and ctrl+click to download.
             downloadSong(driver, songRows[0])
 
